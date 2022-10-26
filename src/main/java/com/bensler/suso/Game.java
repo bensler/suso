@@ -41,13 +41,10 @@ public class Game {
       new Constraint(3, 6, 3, 3),
       new Constraint(6, 6, 3, 3)
     );
-    if (!validate()) {
-      throw new IllegalArgumentException();
-    }
   }
 
-  public boolean validate() {
-    return field.checkConstraints(constraints);
+  public void validate() throws ValidationException {
+    field.checkConstraints(constraints);
   }
 
   public void solve() {

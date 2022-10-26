@@ -1,13 +1,12 @@
 package com.bensler.suso;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 public class GameTest {
-
-  public GameTest() {
-  }
 
   @Test
   public void testValid() {
@@ -45,7 +44,7 @@ public class GameTest {
 
   @Test
   public void testRowWrong() {
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(ValidationException.class, () ->
       new Game(new int[][] { // ---v
         {5, 3, 0,  0, 7, 0,  0, 0, 7},
         {6, 0, 0,  1, 9, 5,  0, 0, 0},
@@ -58,13 +57,13 @@ public class GameTest {
         {0, 6, 0,  0, 0, 0,  2, 8, 0},
         {0, 0, 0,  4, 1, 9,  0, 0, 5},
         {0, 0, 0,  0, 8, 0,  0, 7, 9}
-      })
+      }).validate()
     );
   }
 
   @Test
   public void testColWrong() {
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(ValidationException.class, () ->
       new Game(new int[][] {
         {5, 3, 0,  0, 7, 0,  0, 0, 0},
         {6, 0, 0,  1, 9, 5,  0, 0, 0},
@@ -77,27 +76,50 @@ public class GameTest {
         {0, 6, 0,  0, 0, 0,  2, 8, 0},
         {0, 0, 0,  4, 1, 9,  0, 0, 5},
         {0, 0, 0,  0, 8, 0,  0, 7, 9}
-      })
+      }).validate()
     );
   }
 
   @Test
   public void testSquareWrong() {
-    assertThrows(IllegalArgumentException.class, () ->
-    new Game(new int[][] {
-      {5, 3, 0,  0, 7, 0,  0, 0, 7},
-      {6, 0, 0,  1, 9, 5,  0, 0, 0},
-      {0, 9, 8,  0, 0, 0,  0, 6, 0},
-      // --------v
-      {8, 0, 0,  5, 6, 0,  0, 0, 3},
-      {4, 0, 0,  8, 5, 3,  0, 0, 1},
-      {7, 0, 0,  0, 2, 0,  0, 0, 6},
+    assertThrows(ValidationException.class, () ->
+      new Game(new int[][] {
+        {5, 3, 0,  0, 7, 0,  0, 0, 7},
+        {6, 0, 0,  1, 9, 5,  0, 0, 0},
+        {0, 9, 8,  0, 0, 0,  0, 6, 0},
+        // --------v
+        {8, 0, 0,  5, 6, 0,  0, 0, 3},
+        {4, 0, 0,  8, 5, 3,  0, 0, 1},
+        {7, 0, 0,  0, 2, 0,  0, 0, 6},
 
-      {0, 6, 0,  0, 0, 0,  2, 8, 0},
-      {0, 0, 0,  4, 1, 9,  0, 0, 5},
-      {0, 0, 0,  0, 8, 0,  0, 7, 9}
-    })
-        );
+        {0, 6, 0,  0, 0, 0,  2, 8, 0},
+        {0, 0, 0,  4, 1, 9,  0, 0, 5},
+        {0, 0, 0,  0, 8, 0,  0, 7, 9}
+      }).validate()
+    );
+  }
+
+  @Test
+  public void testViolateMultipleConstraints() {
+    try {
+      new Game(new int[][] {
+        {5, 3, 0,  0, 7, 0,  0, 0, 0},
+        // ------------------------v
+        {6, 0, 0,  1, 9, 5,  0, 0, 6},
+        {0, 9, 8,  0, 0, 0,  0, 6, 0},
+
+        {8, 0, 0,  0, 6, 0,  0, 0, 3},
+        {4, 0, 0,  8, 5, 3,  0, 0, 1},
+        {7, 0, 0,  0, 2, 0,  0, 0, 6},
+
+        {0, 6, 0,  0, 0, 0,  2, 8, 0},
+        {0, 0, 0,  4, 1, 9,  0, 0, 5},
+        {0, 0, 0,  0, 8, 0,  0, 7, 9}
+      }).validate();
+      fail("missing ValidationException to be thrown");
+    } catch (ValidationException ve) {
+      assertEquals(3, ve.getConstraints().size());
+    }
   }
 
 }

@@ -108,8 +108,14 @@ public class Field {
     field = Map.copyOf(tmpField);
   }
 
-  public boolean checkConstraints(List<Constraint> constraints) {
-    return constraints.stream().filter(constraint -> !constraint.check(this)).findFirst().isEmpty();
+  public void checkConstraints(List<Constraint> constraints) throws ValidationException {
+    final Set<Constraint> failedConstraints = constraints.stream().filter(
+      constraint -> !constraint.check(this)
+    ).collect(Collectors.toSet());
+
+    if (!failedConstraints.isEmpty()) {
+      throw new ValidationException(failedConstraints);
+    }
   }
 
   public Digit get(int x, int y) {
