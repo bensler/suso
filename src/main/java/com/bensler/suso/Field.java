@@ -1,7 +1,7 @@
 package com.bensler.suso;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,23 +89,14 @@ public class Field {
 
   private final Map<Coordinate, Digit> field;
 
-  public Field(int[][] initialState) {
-    final Map<Coordinate, Digit> tmpField = new HashMap<>();
-
-    // TODO range check 9x9
-    // TODO range check 1..9
-    for (int rowIndex = 0; rowIndex < initialState.length; rowIndex++) {
-      final int[] row = initialState[rowIndex];
-
-      for (int colIndex = 0; colIndex < row.length; colIndex++) {
-        final Digit digit = DigitsLookup.get(row[colIndex]);
-
-        if (digit != null) {
-          tmpField.put(new Coordinate(colIndex, rowIndex), digit);
-        }
-      }
-    }
-    field = Map.copyOf(tmpField);
+  public Field(Set<Coordinate> coordinates, int[][] initialState) {
+    field = coordinates.stream().map(
+      coordinate -> new SimpleEntry<>(coordinate, DigitsLookup.get(initialState[coordinate.y][coordinate.x]))
+    ).filter(entry -> (entry.getValue() != null))
+    .collect(Collectors.toMap(
+      entry -> entry.getKey(),
+      entry -> entry.getValue()
+    ));
   }
 
   public void checkConstraints(List<Constraint> constraints) throws ValidationException {

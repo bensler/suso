@@ -1,14 +1,23 @@
 package com.bensler.suso;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import com.bensler.suso.Field.Coordinate;
 
 public class Game {
 
+  private final Set<Coordinate> coordinates;
   private final Field field;
   private final List<Constraint> constraints;
 
   public Game(int[][] initialState) {
-    field = new Field(initialState);
+    coordinates = Set.copyOf(IntStream.range(0, 9).mapToObj(x -> IntStream.range(0, 9)
+      .mapToObj(y -> new Coordinate(x, y)).collect(Collectors.toSet()))
+      .flatMap(coordinateList -> coordinateList.stream()).collect(Collectors.toSet()
+    ));
     constraints = List.of(
       // rows
       new Constraint(0, 0, 9, 1),
@@ -41,6 +50,11 @@ public class Game {
       new Constraint(3, 6, 3, 3),
       new Constraint(6, 6, 3, 3)
     );
+    field = new Field(coordinates, initialState);
+  }
+
+  public Set<Coordinate> getCoordinates() {
+    return coordinates;
   }
 
   public void validate() throws ValidationException {
