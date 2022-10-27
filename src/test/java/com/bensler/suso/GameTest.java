@@ -1,7 +1,6 @@
 package com.bensler.suso;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class GameTest {
 
   @Test
   public void testRowWrong() {
-    assertThrows(ValidationException.class, () ->
+    try {
       new Game(new int[][] { // ---v
         {5, 3, 0,  0, 7, 0,  0, 0, 7},
         {6, 0, 0,  1, 9, 5,  0, 0, 0},
@@ -57,13 +56,16 @@ public class GameTest {
         {0, 6, 0,  0, 0, 0,  2, 8, 0},
         {0, 0, 0,  4, 1, 9,  0, 0, 5},
         {0, 0, 0,  0, 8, 0,  0, 7, 9}
-      }).validate()
-    );
+      }).validate();
+      fail("missing ValidationException to be thrown");
+    } catch (ValidationException ve) {
+      assertEquals(1, ve.getConstraints().size());
+    }
   }
 
   @Test
   public void testColWrong() {
-    assertThrows(ValidationException.class, () ->
+    try {
       new Game(new int[][] {
         {5, 3, 0,  0, 7, 0,  0, 0, 0},
         {6, 0, 0,  1, 9, 5,  0, 0, 0},
@@ -76,15 +78,18 @@ public class GameTest {
         {0, 6, 0,  0, 0, 0,  2, 8, 0},
         {0, 0, 0,  4, 1, 9,  0, 0, 5},
         {0, 0, 0,  0, 8, 0,  0, 7, 9}
-      }).validate()
-    );
+      }).validate();
+      fail("missing ValidationException to be thrown");
+    } catch (ValidationException ve) {
+      assertEquals(1, ve.getConstraints().size());
+    }
   }
 
   @Test
   public void testSquareWrong() {
-    assertThrows(ValidationException.class, () ->
+    try {
       new Game(new int[][] {
-        {5, 3, 0,  0, 7, 0,  0, 0, 7},
+        {5, 3, 0,  0, 7, 0,  0, 0, 0},
         {6, 0, 0,  1, 9, 5,  0, 0, 0},
         {0, 9, 8,  0, 0, 0,  0, 6, 0},
         // --------v
@@ -95,8 +100,11 @@ public class GameTest {
         {0, 6, 0,  0, 0, 0,  2, 8, 0},
         {0, 0, 0,  4, 1, 9,  0, 0, 5},
         {0, 0, 0,  0, 8, 0,  0, 7, 9}
-      }).validate()
-    );
+      }).validate();
+      fail("missing ValidationException to be thrown");
+    } catch (ValidationException ve) {
+      assertEquals(1, ve.getConstraints().size());
+    }
   }
 
   @Test

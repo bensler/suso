@@ -1,35 +1,35 @@
 package com.bensler.suso;
 
-import java.util.HashSet;
+import java.awt.Rectangle;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.bensler.suso.Field.Coordinate;
 import com.bensler.suso.Field.Digit;
 
 public class Constraint {
 
-  private final int x, y, w, h;
+  private final Rectangle rect;
+  private final Set<Coordinate> coordinates;
 
-  public Constraint(int pX, int pY, int pW, int pH) {
-    x = pX;
-    y = pY;
-    w = pW;
-    h = pH;
+  public Constraint(Rectangle pRect, Set<Coordinate> pCoordinates) {
+    rect = new Rectangle(pRect);
+    coordinates = Set.copyOf(pCoordinates);
   }
 
   /** @return if constraint is fulfilled */
   public boolean check(Field field) {
-    final Set<Digit> allDigits = new HashSet<>(Digit.VALUES);
+    final List<Digit> collectedDigits =  coordinates.stream().flatMap(
+      coordinate -> field.get(coordinate).stream()
+    ).collect(Collectors.toList());
 
-    for (int vx = x; vx < (x + w); vx++) {
-      for (int vy = y; vy < (y + h); vy++) {
-        final Digit digit = field.get(vx, vy);
+    return !(collectedDigits.size() > Set.copyOf(collectedDigits).size());
+  }
 
-        if ((digit != null) && (!allDigits.remove(digit))) {
-          return false;
-        }
-      }
-    };
-    return true;
+  @Override
+  public String toString() {
+    return getClass().getName() + "[" + rect + "]";
   }
 
 }
