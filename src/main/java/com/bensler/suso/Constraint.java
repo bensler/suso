@@ -29,7 +29,15 @@ public class Constraint {
 
   @Override
   public String toString() {
-    return getClass().getName() + "[" + rect + "]";
+    return getClass().getSimpleName() + "[" + rect + "]";
+  }
+
+  public boolean applies(Coordinate coordinate) {
+    return coordinates.contains(coordinate);
+  }
+
+  public Set<Digit> getUsedDigits(Field field) {
+    return coordinates.stream().flatMap(coordinate -> field.get(coordinate).stream()).collect(Collectors.toSet());
   }
 
 }

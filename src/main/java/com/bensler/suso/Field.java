@@ -2,6 +2,9 @@ package com.bensler.suso;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -100,6 +103,10 @@ public class Field {
     ));
   }
 
+  public Field(Field pField) {
+    field = new HashMap<>(pField.field);
+  }
+
   public void checkConstraints(List<Constraint> constraints) throws ValidationException {
     final Set<Constraint> failedConstraints = constraints.stream().filter(
       constraint -> !constraint.check(this)
@@ -114,6 +121,14 @@ public class Field {
     return Optional.ofNullable(field.get(coordinate));
   }
 
+  public void set(Coordinate coordinate, Digit digit) {
+    if (field.containsKey(coordinate)) {
+      throw new IllegalArgumentException("Already set!");
+    } else {
+      field.put(coordinate, digit);
+    }
+  }
+
   @Override
   public String toString() {
     return field.entrySet().stream().sorted(
@@ -121,6 +136,34 @@ public class Field {
     ).map(
       entry -> entry.getKey() + ":" + entry.getValue()
     ).collect(Collectors.joining("\n"));
+  }
+
+  public Set<Coordinate> getEmptyCells(Set<Coordinate> allCoordinates) {
+    allCoordinates.removeAll(field.keySet());
+    return allCoordinates;
+  }
+
+  public Optional<Digit> trySolve(Coordinate coordinate, Collection<Constraint> constraints) {
+    if (field.containsKey(coordinate)) {
+      throw new IllegalArgumentException("Already solved");
+    } else {
+      List<Constraint> applicableConstraints =
+      constraints.stream()
+      .filter(constraint -> constraint.applies(coordinate))
+      .collect(Collectors.toList());
+
+       Map<Constraint, Set<Digit>> usedDigitsPerConstraint = applicableConstraints.stream().collect(Collectors.toMap(
+        constraint -> constraint,
+        constraint -> constraint.getUsedDigits(this)
+      ));
+      Set<Digit> allDigits = new HashSet<>(Digit.VALUES);
+      usedDigitsPerConstraint.values().stream().forEach(usedDigits -> allDigits.removeAll(usedDigits));
+      return ((allDigits.size() == 1) ? Optional.of(allDigits.stream().findFirst().get()) : Optional.empty());
+    }
+  }
+
+  public boolean equals(Field other) {
+    return field.equals(other.field);
   }
 
 }

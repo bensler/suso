@@ -1,13 +1,18 @@
 package com.bensler.suso;
 
 import java.awt.Rectangle;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.bensler.suso.Field.Coordinate;
+import com.bensler.suso.Field.Digit;
 
 public class Game {
 
@@ -59,9 +64,33 @@ public class Game {
     field.checkConstraints(constraints);
   }
 
-  public void solve() {
-    // TODO
+  public void solve() throws ValidationException {
+    validate();
+    Set<Coordinate> emptyCells = field.getEmptyCells(new HashSet<>(coordinates));
 
+    while (!emptyCells.isEmpty()) {
+      Map<Coordinate, Digit> hits = new HashMap<>();
+      for (Coordinate emptyCell : emptyCells) {
+        final Optional<Digit> hit = field.trySolve(emptyCell, constraints);
+
+        if (hit.isPresent()) {
+          hits.put(emptyCell, hit.get());
+        }
+      }
+      System.out.println(hits);
+      if (hits.isEmpty()) {
+        throw new IllegalStateException("Unsolvable!");
+      } else {
+        hits.forEach((coordinate, digit) -> {
+          field.set(coordinate, digit);
+          emptyCells.remove(coordinate);
+        });
+      }
+    }
+  }
+
+  public Field getField() {
+    return new Field(field);
   }
 
 }
