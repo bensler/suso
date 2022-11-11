@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class GameTest {
 
-  private final static int[][] TO_SOLVE = new int[][] {
+  private final static int[][] TO_SOLVE_1 = new int[][] {
     {5, 3, 0,  0, 7, 0,  0, 0, 0},
     {6, 0, 0,  1, 9, 5,  0, 0, 0},
     {0, 9, 8,  0, 0, 0,  0, 6, 0},
@@ -22,7 +22,7 @@ public class GameTest {
     {0, 0, 0,  0, 8, 0,  0, 7, 9}
   };
 
-  private final static int[][] SOLVED = new int[][] {
+  private final static int[][] SOLVED_1 = new int[][] {
     {5, 3, 4,  6, 7, 8,  9, 1, 2},
     {6, 7, 2,  1, 9, 5,  3, 4, 8},
     {1, 9, 8,  3, 4, 2,  5, 6, 7},
@@ -38,24 +38,24 @@ public class GameTest {
 
   @Test
   public void testValid() throws ValidationException {
-    new Game(TO_SOLVE).validate();
+    new Game(TO_SOLVE_1).validate();
   }
 
   @Test
   public void testSolvedValid() throws ValidationException {
-    new Game(SOLVED).validate();
+    new Game(SOLVED_1).validate();
   }
 
   @Test
-  public void testSolve() throws ValidationException {
-    final Game game = new Game(TO_SOLVE);
+  public void testSolve1() throws ValidationException {
+    final Game game = new Game(TO_SOLVE_1);
 
     game.solve();
-    assertTrue(game.getField().equals(new Game(SOLVED).getField()));
+    assertTrue(game.getField().equals(new Game(SOLVED_1).getField()));
   }
 
   public void testSolveSolved() throws ValidationException {
-    final Game game = new Game(SOLVED);
+    final Game game = new Game(SOLVED_1);
     final Field fieldBefore = game.getField();
 
     game.solve();

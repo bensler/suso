@@ -11,9 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.bensler.suso.Field.Coordinate;
-import com.bensler.suso.Field.Digit;
-
 public class Game {
 
   private final Set<Coordinate> coordinates;

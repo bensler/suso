@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.bensler.suso.Field.Coordinate;
-import com.bensler.suso.Field.Digit;
-
 public class Constraint {
 
   private final Rectangle rect;
