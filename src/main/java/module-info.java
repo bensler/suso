@@ -1,5 +1,7 @@
 module com.bensler.suso {
 
-  requires java.desktop;
+  requires transitive java.desktop;
+
+  exports com.bensler.suso;
 
 }

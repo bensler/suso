@@ -13,12 +13,16 @@ import java.util.stream.Stream;
 
 public class Game {
 
+  private final int width;
+  private final int height;
   private final Set<Coordinate> coordinates;
   private final Field field;
   private final List<Constraint> constraints;
 
   public Game(int[][] initialState) {
-    coordinates = createCoordinates(new Rectangle(0, 0, 9, 9));
+    width = 9;
+    height = 9;
+    coordinates = createCoordinates(new Rectangle(0, 0, width, height));
     constraints = Stream.concat(
       Stream.concat(
         // rows
@@ -54,7 +58,7 @@ public class Game {
   }
 
   public Set<Coordinate> getCoordinates() {
-    return coordinates;
+    return new HashSet<>(coordinates);
   }
 
   public void validate() throws ValidationException {
@@ -88,6 +92,14 @@ public class Game {
 
   public Field getField() {
     return new Field(field);
+  }
+
+  public int getWidth() {
+    return width;
+  }
+
+  public int getHeight() {
+    return height;
   }
 
 }
