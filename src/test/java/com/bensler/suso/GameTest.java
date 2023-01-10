@@ -56,7 +56,7 @@ public class GameTest {
 
   public void testSolveSolved() throws ValidationException {
     final Game game = new Game(SOLVED_1);
-    final Field fieldBefore = game.getField();
+    final FieldImpl fieldBefore = game.getField();
 
     game.solve();
     assertTrue(fieldBefore.equals(game.getField()));

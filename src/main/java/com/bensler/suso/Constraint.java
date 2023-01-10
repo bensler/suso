@@ -33,7 +33,7 @@ public class Constraint {
     return coordinates.contains(coordinate);
   }
 
-  public Set<Digit> getUsedDigits(Field field) {
+  public Set<Digit> getUsedDigits(FieldImpl field) {
     return coordinates.stream().flatMap(coordinate -> field.get(coordinate).stream()).collect(Collectors.toSet());
   }
 

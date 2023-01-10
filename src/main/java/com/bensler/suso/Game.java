@@ -16,7 +16,7 @@ public class Game {
   private final int width;
   private final int height;
   private final Set<Coordinate> coordinates;
-  private final Field field;
+  private final FieldImpl field;
   private final List<Constraint> constraints;
 
   public Game(int[][] initialState) {
@@ -43,7 +43,7 @@ public class Game {
         createConstraint(new Rectangle(6, 6, 3, 3))
       )
     ).collect(Collectors.toList());
-    field = new Field(coordinates, initialState);
+    field = new FieldImpl(coordinates, initialState);
   }
 
   private Constraint createConstraint(Rectangle rect) {
@@ -62,12 +62,22 @@ public class Game {
   }
 
   public void validate() throws ValidationException {
-    field.checkConstraints(constraints);
+    final Set<Constraint> failedConstraints = constraints.stream().filter(
+      constraint -> !constraint.check(field)
+    ).collect(Collectors.toSet());
+
+    if (!failedConstraints.isEmpty()) {
+      throw new ValidationException(failedConstraints);
+    }
   }
 
   public void solve() throws ValidationException {
     validate();
-    Set<Coordinate> emptyCells = field.getEmptyCells(new HashSet<>(coordinates));
+    final Set<Coordinate> emptyCells = new HashSet<>(
+      coordinates.stream()
+      .filter(coordinate -> field.get(coordinate).isEmpty())
+      .collect(Collectors.toSet())
+    );
 
     while (!emptyCells.isEmpty()) {
       Map<Coordinate, Digit> hits = new HashMap<>();
@@ -90,8 +100,8 @@ public class Game {
     }
   }
 
-  public Field getField() {
-    return new Field(field);
+  public FieldImpl getField() {
+    return new FieldImpl(field);
   }
 
   public int getWidth() {
