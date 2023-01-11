@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class FieldImpl implements Field {
+public class FieldImpl implements Field.Mutable {
 
   private final static Map<Integer, Digit> DigitsLookup = Arrays.stream(Digit.values()).collect(Collectors.toMap(
     digit -> Integer.valueOf(digit.number),
@@ -39,12 +39,9 @@ public class FieldImpl implements Field {
     return Optional.ofNullable(field.get(coordinate));
   }
 
+  @Override
   public void set(Coordinate coordinate, Digit digit) {
-    if (field.containsKey(coordinate)) {
-      throw new IllegalArgumentException("Already set!");
-    } else {
-      field.put(coordinate, digit);
-    }
+    field.put(coordinate, digit);
   }
 
   @Override

@@ -6,4 +6,10 @@ public interface Field {
 
   Optional<Digit> get(Coordinate coordinate);
 
+  interface Mutable extends Field {
+
+    void set(Coordinate coordinate, Digit digit);
+
+  }
+
 }
