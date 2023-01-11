@@ -1,17 +1,15 @@
 package com.bensler.suso;
 
 import java.awt.Rectangle;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Game {
+public class Game implements Field {
 
   private final int width;
   private final int height;
@@ -43,7 +41,7 @@ public class Game {
         createConstraint(new Rectangle(6, 6, 3, 3))
       )
     ).collect(Collectors.toList());
-    field = new FieldImpl(coordinates, initialState);
+    field = new FieldImpl(new FieldCreator(coordinates).createFieldData(initialState));
   }
 
   private Constraint createConstraint(Rectangle rect) {
@@ -61,6 +59,10 @@ public class Game {
     return new HashSet<>(coordinates);
   }
 
+  public Set<Constraint> getConstraints() {
+    return new HashSet<>(constraints);
+  }
+
   public void validate() throws ValidationException {
     final Set<Constraint> failedConstraints = constraints.stream().filter(
       constraint -> !constraint.check(field)
@@ -71,33 +73,23 @@ public class Game {
     }
   }
 
+  @Override
+  public Optional<Digit> get(Coordinate coordinate) {
+    return field.get(coordinate);
+  }
+
+  @Override
+  public Set<Coordinate> getSetCoordinates() {
+    return field.getSetCoordinates();
+  }
+
+  public void set(Coordinate coordinate, Digit digit) {
+    field.set(coordinate, digit);
+  }
+
   public void solve() throws ValidationException {
     validate();
-    final Set<Coordinate> emptyCells = new HashSet<>(
-      coordinates.stream()
-      .filter(coordinate -> field.get(coordinate).isEmpty())
-      .collect(Collectors.toSet())
-    );
-
-    while (!emptyCells.isEmpty()) {
-      Map<Coordinate, Digit> hits = new HashMap<>();
-      for (Coordinate emptyCell : emptyCells) {
-        final Optional<Digit> hit = field.trySolve(emptyCell, constraints);
-
-        if (hit.isPresent()) {
-          hits.put(emptyCell, hit.get());
-        }
-      }
-      System.out.println(hits);
-      if (hits.isEmpty()) {
-        throw new IllegalStateException("Unsolvable!");
-      } else {
-        hits.forEach((coordinate, digit) -> {
-          field.set(coordinate, digit);
-          emptyCells.remove(coordinate);
-        });
-      }
-    }
+    new Solver(this).solve();
   }
 
   public FieldImpl getField() {
