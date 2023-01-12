@@ -45,7 +45,7 @@ public class Game implements Field {
   }
 
   private Constraint createConstraint(Rectangle rect) {
-    return new Constraint(rect, createCoordinates(rect));
+    return new Constraint(createCoordinates(rect));
   }
 
   private Set<Coordinate> createCoordinates(Rectangle rect) {
@@ -55,12 +55,12 @@ public class Game implements Field {
     ));
   }
 
-  public Set<Coordinate> getCoordinates() {
-    return new HashSet<>(coordinates);
-  }
-
-  public Set<Constraint> getConstraints() {
-    return new HashSet<>(constraints);
+  public Set<Coordinate> getEmptyCells() {
+    return new HashSet<>(
+      coordinates.stream()
+      .filter(coordinate -> get(coordinate).isEmpty())
+      .collect(Collectors.toSet())
+    );
   }
 
   public void validate() throws ValidationException {
@@ -71,6 +71,14 @@ public class Game implements Field {
     if (!failedConstraints.isEmpty()) {
       throw new ValidationException(failedConstraints);
     }
+  }
+
+  public Set<Coordinate> getCoordinates() {
+    return new HashSet<>(coordinates);
+  }
+
+  public Set<Constraint> getConstraints() {
+    return new HashSet<>(constraints);
   }
 
   @Override

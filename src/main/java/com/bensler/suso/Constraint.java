@@ -1,17 +1,14 @@
 package com.bensler.suso;
 
-import java.awt.Rectangle;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Constraint {
 
-  private final Rectangle rect;
   private final Set<Coordinate> coordinates;
 
-  public Constraint(Rectangle pRect, Set<Coordinate> pCoordinates) {
-    rect = new Rectangle(pRect);
+  public Constraint(Set<Coordinate> pCoordinates) {
     coordinates = Set.copyOf(pCoordinates);
   }
 
@@ -22,11 +19,6 @@ public class Constraint {
     ).collect(Collectors.toList());
 
     return !(collectedDigits.size() > Set.copyOf(collectedDigits).size());
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + "[" + rect + "]";
   }
 
   public boolean applies(Coordinate coordinate) {

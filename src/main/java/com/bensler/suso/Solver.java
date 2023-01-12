@@ -2,11 +2,8 @@ package com.bensler.suso;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 class Solver {
 
@@ -18,25 +15,21 @@ class Solver {
     constraints = game.getConstraints();
   }
 
-  public void solve() {
-    final Set<Coordinate> emptyCells = new HashSet<>(
-      game.getCoordinates().stream()
-      .filter(coordinate -> game.get(coordinate).isEmpty())
-      .collect(Collectors.toSet())
-    );
+  public boolean solve() {
+    final Set<Coordinate> emptyCells = game.getEmptyCells();
 
     while (!emptyCells.isEmpty()) {
       Map<Coordinate, Digit> hits = new HashMap<>();
       for (Coordinate emptyCell : emptyCells) {
-        final Optional<Digit> hit = trySolve(emptyCell);
+        final Set<Digit> possibleDigits = findPossibleDigits(emptyCell);
 
-        if (hit.isPresent()) {
-          hits.put(emptyCell, hit.get());
+        if (possibleDigits.size() == 1) {
+          hits.put(emptyCell, possibleDigits.stream().findFirst().get());
         }
       }
       System.out.println(hits);
       if (hits.isEmpty()) {
-        throw new IllegalStateException("Unsolvable!");
+        return false;
       } else {
         hits.forEach((coordinate, digit) -> {
           game.set(coordinate, digit);
@@ -44,20 +37,17 @@ class Solver {
         });
       }
     }
+    return true;
   }
 
-  private Optional<Digit> trySolve(Coordinate coordinate) {
-    final List<Constraint> applicableConstraints = constraints.stream()
-      .filter(constraint -> constraint.applies(coordinate))
-      .collect(Collectors.toList());
-    final Map<Constraint, Set<Digit>> usedDigitsPerConstraint = applicableConstraints.stream().collect(Collectors.toMap(
-      constraint -> constraint,
-      constraint -> constraint.getUsedDigits(game)
-    ));
-    final Set<Digit> allDigits = new HashSet<>(Digit.VALUES);
+  private Set<Digit> findPossibleDigits(Coordinate coordinate) {
+    final Set<Digit> unusedDigits = new HashSet<>(Digit.VALUES);
 
-    usedDigitsPerConstraint.values().stream().forEach(usedDigits -> allDigits.removeAll(usedDigits));
-    return ((allDigits.size() == 1) ? Optional.of(allDigits.stream().findFirst().get()) : Optional.empty());
+    constraints.stream()
+      .filter(constraint -> constraint.applies(coordinate))
+      .map(constraint -> constraint.getUsedDigits(game))
+      .forEach(digits -> unusedDigits.removeAll(digits));
+    return unusedDigits;
   }
 
 }
