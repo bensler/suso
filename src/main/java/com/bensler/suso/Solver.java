@@ -32,7 +32,7 @@ class Solver {
         return false;
       } else {
         hits.forEach((coordinate, digit) -> {
-          game.set(coordinate, digit);
+          game.setDigit(coordinate, digit);
           emptyCells.remove(coordinate);
         });
       }

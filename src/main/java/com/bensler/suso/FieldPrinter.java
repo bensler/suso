@@ -11,7 +11,7 @@ public class FieldPrinter {
   public String print(Field field) {
     return field.getSetCoordinates().stream()
       .sorted()
-      .map(coordinate -> coordinate + ":" + field.get(coordinate).get())
+      .map(coordinate -> coordinate + ":" + field.getDigit(coordinate).get())
       .collect(Collectors.joining("\n"));
   }
 

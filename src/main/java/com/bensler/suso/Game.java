@@ -58,7 +58,7 @@ public class Game implements Field {
   public Set<Coordinate> getEmptyCells() {
     return new HashSet<>(
       coordinates.stream()
-      .filter(coordinate -> get(coordinate).isEmpty())
+      .filter(coordinate -> getDigit(coordinate).isEmpty())
       .collect(Collectors.toSet())
     );
   }
@@ -82,8 +82,8 @@ public class Game implements Field {
   }
 
   @Override
-  public Optional<Digit> get(Coordinate coordinate) {
-    return field.get(coordinate);
+  public Optional<Digit> getDigit(Coordinate coordinate) {
+    return field.getDigit(coordinate);
   }
 
   @Override
@@ -91,8 +91,8 @@ public class Game implements Field {
     return field.getSetCoordinates();
   }
 
-  public void set(Coordinate coordinate, Digit digit) {
-    field.set(coordinate, digit);
+  public void setDigit(Coordinate coordinate, Digit digit) {
+    field.setDigit(coordinate, digit);
   }
 
   public void solve() throws ValidationException {

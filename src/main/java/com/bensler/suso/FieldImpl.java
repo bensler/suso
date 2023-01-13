@@ -19,7 +19,7 @@ public class FieldImpl implements Field.Mutable {
   }
 
   @Override
-  public Optional<Digit> get(Coordinate coordinate) {
+  public Optional<Digit> getDigit(Coordinate coordinate) {
     return Optional.ofNullable(data.get(coordinate));
   }
 
@@ -29,7 +29,7 @@ public class FieldImpl implements Field.Mutable {
   }
 
   @Override
-  public void set(Coordinate coordinate, Digit digit) {
+  public void setDigit(Coordinate coordinate, Digit digit) {
     if (digit == null) {
       throw new IllegalArgumentException("digit must not be null");
     }

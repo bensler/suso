@@ -15,7 +15,7 @@ public class Constraint {
   /** @return if constraint is fulfilled */
   public boolean check(Field field) {
     final List<Digit> collectedDigits =  coordinates.stream().flatMap(
-      coordinate -> field.get(coordinate).stream()
+      coordinate -> field.getDigit(coordinate).stream()
     ).collect(Collectors.toList());
 
     return !(collectedDigits.size() > Set.copyOf(collectedDigits).size());
@@ -26,7 +26,7 @@ public class Constraint {
   }
 
   public Set<Digit> getUsedDigits(Field field) {
-    return coordinates.stream().flatMap(coordinate -> field.get(coordinate).stream()).collect(Collectors.toSet());
+    return coordinates.stream().flatMap(coordinate -> field.getDigit(coordinate).stream()).collect(Collectors.toSet());
   }
 
 }

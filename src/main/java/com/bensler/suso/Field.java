@@ -5,13 +5,13 @@ import java.util.Set;
 
 public interface Field {
 
-  Optional<Digit> get(Coordinate coordinate);
+  Optional<Digit> getDigit(Coordinate coordinate);
 
   Set<Coordinate> getSetCoordinates();
 
   interface Mutable extends Field {
 
-    void set(Coordinate coordinate, Digit digit);
+    void setDigit(Coordinate coordinate, Digit digit);
 
   }
 
