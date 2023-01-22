@@ -17,7 +17,7 @@ public class Constraint {
     final List<Digit> collectedDigits =  coordinates.stream().flatMap(
       coordinate -> field.getDigit(coordinate).stream()
     ).collect(Collectors.toList());
-
+    // duplicate check
     return !(collectedDigits.size() > Set.copyOf(collectedDigits).size());
   }
 

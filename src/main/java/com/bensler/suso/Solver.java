@@ -40,7 +40,7 @@ class Solver {
     return true;
   }
 
-  private Set<Digit> findPossibleDigits(Coordinate coordinate) {
+  public Set<Digit> findPossibleDigits(Coordinate coordinate) {
     final Set<Digit> unusedDigits = new HashSet<>(Digit.VALUES);
 
     constraints.stream()
