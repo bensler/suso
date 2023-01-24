@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-class Solver {
+public class Solver {
 
   private final Game game;
   private final Set<Constraint> constraints;

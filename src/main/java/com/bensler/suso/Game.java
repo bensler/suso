@@ -63,14 +63,16 @@ public class Game implements Field {
     );
   }
 
-  public void validate() throws ValidationException {
-    final Set<Constraint> failedConstraints = constraints.stream().filter(
+  public Set<Constraint> getFailingConstraints() {
+    return constraints.stream().filter(
       constraint -> !constraint.check(field)
     ).collect(Collectors.toSet());
+  }
 
-    if (!failedConstraints.isEmpty()) {
-      throw new ValidationException(failedConstraints);
-    }
+  public boolean isValid() {
+    return !constraints.stream().anyMatch(
+      constraint -> !constraint.check(field)
+    );
   }
 
   public Set<Coordinate> getCoordinates() {
@@ -95,8 +97,10 @@ public class Game implements Field {
     field.setDigit(coordinate, digit);
   }
 
-  public void solve() throws ValidationException {
-    validate();
+  public void solve() {
+    if (!isValid()) {
+      throw new IllegalStateException("game is invalid");
+    }
     new Solver(this).solve();
   }
 

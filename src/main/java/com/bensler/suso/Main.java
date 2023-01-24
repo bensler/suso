@@ -3,7 +3,7 @@ package com.bensler.suso;
 /** App entry point. */
 public class Main {
 
-  public static void main(String[] args) throws ValidationException {
+  public static void main(String[] args) {
     new Game(new int[][] {
       {5, 3, 0,  0, 7, 0,  0, 0, 0},
       {6, 0, 0,  1, 9, 5,  0, 0, 0},
