@@ -1,7 +1,7 @@
 package com.bensler.suso;
 
 import java.awt.Rectangle;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,14 +15,18 @@ public class Constraint {
 
   /** @return if constraint is fulfilled */
   public boolean check(Field field) {
-    final List<Digit> collectedDigits =  coordinates.stream().flatMap(
-      coordinate -> field.getDigit(coordinate).stream()
-    ).collect(Collectors.toList());
-    // duplicate check
-    return !(collectedDigits.size() > Set.copyOf(collectedDigits).size());
+    return findDuplicateDigits(field).isEmpty();
   }
 
-  public boolean applies(Coordinate coordinate) {
+  public Set<Digit> findDuplicateDigits(Field field) {
+    final Set<Digit> duplicateChecker = new HashSet<>();
+
+    return coordinates.stream().flatMap(
+      coordinate -> field.getDigit(coordinate).stream()
+    ).filter(digit -> !duplicateChecker.add(digit)).collect(Collectors.toSet());
+  }
+
+  public boolean covers(Coordinate coordinate) {
     return coordinates.contains(coordinate);
   }
 

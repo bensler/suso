@@ -44,7 +44,7 @@ public class Solver {
     final Set<Digit> unusedDigits = new HashSet<>(Digit.VALUES);
 
     constraints.stream()
-      .filter(constraint -> constraint.applies(coordinate))
+      .filter(constraint -> constraint.covers(coordinate))
       .map(constraint -> constraint.getUsedDigits(game))
       .forEach(digits -> unusedDigits.removeAll(digits));
     return unusedDigits;

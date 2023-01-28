@@ -1,8 +1,11 @@
 package com.bensler.suso;
 
 import java.awt.Rectangle;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,10 +66,14 @@ public class Game implements Field {
     );
   }
 
-  public Set<Constraint> getFailingConstraints() {
-    return constraints.stream().filter(
-      constraint -> !constraint.check(field)
-    ).collect(Collectors.toSet());
+  public Map<Constraint, Set<Digit>> getFailingConstraints() {
+    return constraints.stream().map(
+      constraint -> new SimpleImmutableEntry<>(
+        constraint,
+        constraint.findDuplicateDigits(field)
+      )
+    ).filter(pair -> !pair.getValue().isEmpty())
+    .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
   }
 
   public boolean isValid() {
