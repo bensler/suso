@@ -11,7 +11,7 @@ public interface Field {
 
   interface Mutable extends Field {
 
-    void setDigit(Coordinate coordinate, Digit digit);
+    void setDigit(Coordinate coordinate, Optional<Digit> digit);
 
   }
 

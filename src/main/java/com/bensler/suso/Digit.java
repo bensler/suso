@@ -16,18 +16,25 @@ public enum Digit {
   public final static Set<Digit> VALUES = Set.of(Digit.values());
 
   final int number;
+  final char numberChar;
+  final String numberStr;
 
   private Digit(int pNumber) {
     number = pNumber;
+    numberStr = String.valueOf(number);
+    numberChar = numberStr.charAt(0);
   }
 
   public int getNumber() {
     return number;
   }
 
-  @Override
-  public String toString() {
-    return Integer.valueOf(number).toString();
+  public String getNumberString() {
+    return numberStr;
+  }
+
+  public char getNumberChar() {
+    return numberChar;
   }
 
 }

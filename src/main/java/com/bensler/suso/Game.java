@@ -100,7 +100,7 @@ public class Game implements Field {
     return field.getSetCoordinates();
   }
 
-  public void setDigit(Coordinate coordinate, Digit digit) {
+  public void setDigit(Coordinate coordinate, Optional<Digit> digit) {
     field.setDigit(coordinate, digit);
   }
 

@@ -29,11 +29,8 @@ public class FieldImpl implements Field.Mutable {
   }
 
   @Override
-  public void setDigit(Coordinate coordinate, Digit digit) {
-    if (digit == null) {
-      throw new IllegalArgumentException("digit must not be null");
-    }
-    data.put(coordinate, digit);
+  public void setDigit(Coordinate coordinate, Optional<Digit> optionalDigit) {
+    optionalDigit.ifPresentOrElse(digit -> data.put(coordinate, digit), () -> data.remove(coordinate));
   }
 
   @Override

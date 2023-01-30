@@ -3,6 +3,7 @@ package com.bensler.suso;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class Solver {
@@ -32,7 +33,7 @@ public class Solver {
         return false;
       } else {
         hits.forEach((coordinate, digit) -> {
-          game.setDigit(coordinate, digit);
+          game.setDigit(coordinate, Optional.of(digit));
           emptyCells.remove(coordinate);
         });
       }
