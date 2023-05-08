@@ -2,6 +2,7 @@ package com.bensler.suso;
 
 import java.awt.Rectangle;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +13,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Game implements Field {
+public class Game implements Field.Mutable {
 
   private final int width;
   private final int height;
   private final Set<Coordinate> coordinates;
   private final FieldImpl field;
   private final List<Constraint> constraints;
+
+  public Game(Game template) {
+    width = template.width;
+    height = template.height;
+    coordinates = new HashSet<>(template.coordinates);
+    constraints = new ArrayList<>(template.constraints);
+    field = new FieldImpl(template.field);
+  }
 
   public Game(int[][] initialState) {
     width = 9;
@@ -100,6 +109,7 @@ public class Game implements Field {
     return field.getSetCoordinates();
   }
 
+  @Override
   public void setDigit(Coordinate coordinate, Optional<Digit> digit) {
     field.setDigit(coordinate, digit);
   }

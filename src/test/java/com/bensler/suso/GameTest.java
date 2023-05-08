@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import com.bensler.suso.Solver.Solvability;
+
 public class GameTest {
 
   private final static int[][] TO_SOLVE_1 = new int[][] {
@@ -60,6 +62,25 @@ public class GameTest {
 
     game.solve();
     assertTrue(fieldBefore.equals(game.getField()));
+  }
+
+  @Test
+  public void testNotDetermined() {
+    final Game game = new Game(new int[][] {
+      {5, 0, 0,  0, 0, 0,  0, 0, 0},
+      {0, 0, 0,  0, 0, 0,  0, 0, 0},
+      {0, 0, 0,  0, 0, 0,  0, 0, 0},
+
+      {0, 0, 0,  0, 0, 0,  0, 0, 0},
+      {0, 0, 0,  0, 0, 0,  0, 0, 0},
+      {0, 0, 0,  0, 0, 0,  0, 0, 0},
+
+      {0, 0, 0,  0, 0, 0,  0, 0, 0},
+      {0, 0, 0,  0, 0, 0,  0, 0, 0},
+      {0, 0, 0,  0, 0, 0,  0, 0, 0}
+    });
+
+    assertEquals(Solvability.NOT_DETERMINED, new Solver(game).solve());
   }
 
   @Test

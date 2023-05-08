@@ -1,5 +1,8 @@
 package com.bensler.suso;
 
+import static com.bensler.suso.Solver.Solvability.NOT_DETERMINED;
+import static com.bensler.suso.Solver.Solvability.NOT_SOLVALBE;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,6 +10,23 @@ import java.util.Optional;
 import java.util.Set;
 
 public class Solver {
+
+  public enum Solvability {
+    SOLVABLE(true),
+    NOT_SOLVALBE(false),
+    NOT_DETERMINED(false);
+
+    private final boolean solvable;
+
+    Solvability(boolean pSolvable) {
+      solvable = pSolvable;
+    }
+
+    public boolean isSolvable() {
+      return solvable;
+    }
+
+  }
 
   private final Game game;
   private final Set<Constraint> constraints;
@@ -16,29 +36,36 @@ public class Solver {
     constraints = game.getConstraints();
   }
 
-  public boolean solve() {
+  public Solvability solve() {
     final Set<Coordinate> emptyCells = game.getEmptyCells();
 
     while (!emptyCells.isEmpty()) {
-      Map<Coordinate, Digit> hits = new HashMap<>();
+      final Map<Coordinate, Digit> determinedCells = new HashMap<>();
+      final Set<Coordinate> undeterminedCells = new HashSet<>();
+
       for (Coordinate emptyCell : emptyCells) {
         final Set<Digit> possibleDigits = findPossibleDigits(emptyCell);
+        final int possibleDigitCount = possibleDigits.size();
 
-        if (possibleDigits.size() == 1) {
-          hits.put(emptyCell, possibleDigits.stream().findFirst().get());
+        if (possibleDigitCount == 0) {
+          return NOT_SOLVALBE;
+        }
+        if (possibleDigitCount == 1) {
+          determinedCells.put(emptyCell, possibleDigits.stream().findFirst().get());
+        } else { // (possibleDigitCount > 1)
+          undeterminedCells.add(emptyCell);
         }
       }
-      System.out.println(hits);
-      if (hits.isEmpty()) {
-        return false;
+      if (determinedCells.isEmpty()) {
+        return ((undeterminedCells.isEmpty()) ? NOT_SOLVALBE : NOT_DETERMINED);
       } else {
-        hits.forEach((coordinate, digit) -> {
+        determinedCells.forEach((coordinate, digit) -> {
           game.setDigit(coordinate, Optional.of(digit));
           emptyCells.remove(coordinate);
         });
       }
     }
-    return true;
+    return Solvability.SOLVABLE;
   }
 
   public Set<Digit> findPossibleDigits(Coordinate coordinate) {
